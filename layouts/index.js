@@ -4,7 +4,7 @@ import Footer from "@/components/footer";
 
 export default function Layout({ children, metaTitle, metaDescription }) {
   return (
-    <div>
+    <div className="container mx-auto">
       <Head>
         <title>{`Belajar Next App - ${metaTitle}`}</title>
         <meta
