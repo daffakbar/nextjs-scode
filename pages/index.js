@@ -3,7 +3,11 @@ import Layout from "@/layouts/index";
 
 export default function Home() {
   return (
-    <Layout metaTitle="Home" metaDescription="This is the home page">
+    <Layout
+      metaTitle="Home"
+      metaDescription="ini adalah halaman Home Page"
+      metaKeyword="Home, Belajar Next"
+    >
       <Hero />
     </Layout>
   );
