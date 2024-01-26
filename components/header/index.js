@@ -1,10 +1,12 @@
 import React from "react";
 import withAuth from "../with-auth";
-import Menu from "@/components/menu";
+import dynamic from "next/dynamic";
+const MenuComponent = dynamic(() => import("@/components/menu"));
+
 const Header = () => {
   return (
     <div>
-      <Menu />
+      <MenuComponent />
     </div>
   );
 };

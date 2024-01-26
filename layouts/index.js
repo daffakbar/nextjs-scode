@@ -1,6 +1,7 @@
 import Head from "next/head";
-import Header from "@/components/header";
-import Footer from "@/components/footer";
+import dynamic from "next/dynamic";
+const HeaderComponent = dynamic(() => import("@/components/header"));
+const FooterComponent = dynamic(() => import("@/components/footer"));
 
 export default function Layout({
   children,
@@ -20,9 +21,9 @@ export default function Layout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <HeaderComponent />
       {children}
-      <Footer />
+      <FooterComponent />
     </div>
   );
 }

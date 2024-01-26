@@ -1,6 +1,10 @@
 import Hero from "@/components/hero";
 import Layout from "@/layouts/index";
 import { useEffect } from "react";
+import dynamic from "next/dynamic";
+
+const LayoutComponent = dynamic(() => import("@/layouts"));
+const HeroComponent = dynamic(() => import("@/components/hero"));
 
 export default function Home() {
   useEffect(() => {
@@ -11,12 +15,12 @@ export default function Home() {
   }, []);
 
   return (
-    <Layout
+    <LayoutComponent
       metaTitle="Home"
       metaDescription="ini adalah halaman Home Page"
       metaKeyword="Home, Belajar Next"
     >
-      <Hero />
-    </Layout>
+      <HeroComponent />
+    </LayoutComponent>
   );
 }
