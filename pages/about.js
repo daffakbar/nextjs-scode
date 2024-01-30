@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 
 const LayoutComponent = dynamic(() => import("@/layouts"));
 
-export default function About() {
+export default function About({ posts }) {
   return (
     <LayoutComponent
       metaTitle="About"
@@ -12,14 +12,20 @@ export default function About() {
     >
       <h1>Ini adalah About</h1>
 
-      <Image
-        src={
-          "https://daisyui.com/images/stock/photo-1507358522600-9f71e620c44e.jpg"
-        }
-        alt="Hero Image"
-        width={500}
-        height={500}
-      />
+      {posts.map((post) => (
+        <>
+          <p>
+            {post.id} - {post.title}
+          </p>
+        </>
+      ))}
     </LayoutComponent>
   );
+}
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+  const posts = await res.json();
+  // Pass data to the page via props
+  return { props: { posts } };
 }
