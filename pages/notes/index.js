@@ -1,15 +1,22 @@
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { useQueries } from "@/hooks/useQueries";
+import { useMutation } from "@/hooks/useMutation";
 
 const LayoutComponent = dynamic(() => import("@/layouts"));
 
 export default function Notes() {
+  const { data, isLoading, isError } = useQueries({
+    prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+  });
+
   const [notes, setNotes] = useState();
   const [formNotes, setFormNotes] = useState({ title: "", description: "" });
   const [notif, setNotif] = useState(false);
   const [editNote, setEditNote] = useState(false);
   const [editId, setEditId] = useState();
+  const { mutate } = useMutation();
 
   useEffect(() => {
     async function fetchingData() {
@@ -21,29 +28,37 @@ export default function Notes() {
     }
     fetchingData();
   }, [notif]);
-  // console.log("Notes =", notes);
 
   const handleSubmit = async () => {
-    try {
-      const res = await fetch(
-        "https://paace-f178cafcae7b.nevacloud.io/api/notes",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formNotes),
-        }
-      );
-      const result = await res.json();
-      if (result?.success) {
-        console.log("result", result);
-        setNotif("save");
-        setFormNotes({ title: "", description: "" });
-      }
-    } catch (error) {
-      console.log("Err", error);
+    const res = await mutate({
+      url: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+      payload: formNotes,
+    });
+    if (res?.success) {
+      setNotif("save");
+      setFormNotes({ title: "", description: "" });
     }
+    console.log("RESS", res);
+    // try {
+    //   const res = await fetch(
+    //     "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(formNotes),
+    //     }
+    //   );
+    //   const result = await res.json();
+    //   if (result?.success) {
+    //     console.log("result", result);
+    //     setNotif("save");
+    //     setFormNotes({ title: "", description: "" });
+    //   }
+    // } catch (error) {
+    //   console.log("Err", error);
+    // }
   };
   useEffect(() => {
     if (notif) {
@@ -67,43 +82,27 @@ export default function Notes() {
     }));
   };
   const handeEditSubmit = async (id) => {
-    try {
-      const response = await fetch(
-        `https://paace-f178cafcae7b.nevacloud.io/api/notes/update/${id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            title: formNotes?.title,
-            description: formNotes?.description,
-          }),
-        }
-      );
-      const result = await response.json();
-      if (result?.success) {
-        setNotif("edit");
-        setFormNotes({ title: "", description: "" });
-        setEditNote(false);
-      }
-    } catch (error) {}
+    const res = await mutate({
+      url: `https://paace-f178cafcae7b.nevacloud.io/api/notes/update/${id}`,
+      method: "PATCH",
+      payload: formNotes,
+    });
+
+    if (res?.success) {
+      setNotif("edit");
+      setFormNotes({ title: "", description: "" });
+      setEditNote(false);
+    }
   };
 
-  console.log("setFormNotes =", formNotes);
   const HandleDelete = async (id) => {
-    try {
-      const response = await fetch(
-        `https://paace-f178cafcae7b.nevacloud.io/api/notes/delete/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-      const result = await response.json();
-      if (result?.success) {
-        setNotif("delete");
-      }
-    } catch (error) {}
+    const res = await mutate({
+      url: `https://paace-f178cafcae7b.nevacloud.io/api/notes/delete/${id}`,
+      method: "DELETE",
+    });
+    if (res?.success) {
+      setNotif("delete");
+    }
   };
 
   return (
@@ -197,8 +196,14 @@ export default function Notes() {
           </div>
         </div>
         {/* LIST NOTES */}
+
+        {isLoading && (
+          <center>
+            <span className="loading loading-dots loading-lg text-primary"></span>
+          </center>
+        )}
         <div className=" grid grid-cols-3 gap-4 my-6">
-          {notes?.data?.map((note) => (
+          {data?.data?.map((note) => (
             <div className="card bg-base-100 shadow-xl" key={note.id}>
               <div className="card-body">
                 <h2 className="card-title">{note.title}</h2>
