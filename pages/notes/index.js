@@ -3,14 +3,19 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useQueries } from "@/hooks/useQueries";
 import { useMutation } from "@/hooks/useMutation";
-
+import useSWR from "swr";
+import fetcher from "@/utils/fetcher";
 const LayoutComponent = dynamic(() => import("@/layouts"));
 
 export default function Notes() {
-  const { data, isLoading, isError } = useQueries({
-    prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
-  });
-
+  // const { data, isLoading, isError } = useQueries({
+  //   prefixUrl: "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+  // });
+  const { data, error, isLoading } = useSWR(
+    "https://paace-f178cafcae7b.nevacloud.io/api/notes",
+    fetcher,
+    { refreshInterval: 1000 }
+  );
   const [notes, setNotes] = useState();
   const [formNotes, setFormNotes] = useState({ title: "", description: "" });
   const [notif, setNotif] = useState(false);
