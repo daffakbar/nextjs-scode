@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-const Menu = () => {
+const Menu = ({ user }) => {
   return (
     <div>
       <div className="navbar bg-base-100">
@@ -45,6 +45,9 @@ const Menu = () => {
               </li>
               <li>
                 <Link href={"/notes"}>Notes</Link>
+              </li>
+              <li>
+                <h1 className=" font-semibold uppercase">{user}</h1>
               </li>
             </ul>
           </div>
